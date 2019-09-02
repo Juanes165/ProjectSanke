@@ -46,25 +46,32 @@
         //si el primer objeto es igual a alguno de la lista, termina el juego (la serpiente se comio)
         function ateSelf(world) {
             if (inList(world.snake[0], rest(world.snake))) {
-                make(world, { gameover: true })
-                return world;
+                return true;
             }
+            return false
         }
 
         //si la cabeza se sale del mapa, termina el juego
         function outTheMap(world) {
-            if ((world.snake[0].x > 10) && (world.snake[0].y > 10)          // cambiar valores segun los del canvas
-                && (world.snake[0].x <= 10) && (world.snake[0].y <= 10)) {
-                make(world, { gameover: true })
-                return world;
+            if ((world.snake[0].x > 10) && (world.snake[0].y > 10) && (world.snake[0].x <= 10) && (world.snake[0].y <= 10)) {
+                return true;
             }
+            return false
         }
 
-        //if world.pause == true, returns same world over and over (pauses).
-        function pause(world) {
+        function events(world){
+            if (ateSelf(world)) {
+                return movement(make(world, { gameover: true }));
+                }
+
+            if (outTheMap(world)) {
+                return movement(make(world, { gameover: true }));
+            }
+            
             if (world.pause == true) {
                 return world
             }
+            return movement(world)
         }
 
         //retorna true si la posicion de la cabeza es igual a la de la comida
@@ -119,7 +126,6 @@
         function foodSpawn(object) {
 
         }
-
 
         //funcion principal, no se que hace pero es importante
         function sketchProc(processing) {
@@ -191,26 +197,12 @@
 
             //executes itself in every frame
             processing.onTic = function (world) {
-                if (inList(world.snake[0], rest(world.snake))) {
-                    return make(world, { gameover: true });
-                }
-                if ((world.snake[0].x >= 40) || (world.snake[0].y >= 25)          // cambiar valores segun los del canvas
-                    || (world.snake[0].x < 0) || (world.snake[0].y < 0)) {
-                    return make(world, { gameover: true });
-                }
-                if (world.pause == true) {
-                    return world
-                }
-                /*ateSelf(world);
-                outTheMap(world);  //estas funciones estan definidas arriba pero al llamarse, no funcionan
-                pause(world);*/
-                return gotFood(movement(world));
+                return events(world);
             }
 
 
-
-            //funcion que dibuja cuadrados segun el largo de la serpiente, pinta la sepiente
             function snakeLength(list) {
+                //draws squares of the snake.
                 if (length(list) == 1) {
                     processing.rect(first(list).x * 20, first(list).y * 20, 20, 20)
                 }
