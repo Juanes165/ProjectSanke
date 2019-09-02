@@ -23,12 +23,12 @@
         }
 
         //recibe una lista y retorna una lista igual sin el ultimo valor
-        function listMinOne(list) {
+        function listMinLast(list) {
             if (length(list) == 1) {
                 return [];
             }
             else {
-                return cons(first(list), listMinOne(rest(list)));
+                return cons(first(list), listMinLast(rest(list)));
             }
         }
 
@@ -75,6 +75,7 @@
             return world
         }
 
+
         function growSnake(world){
             //adds one square behind the last of the snake.
             if(world.snake[world.snake.length - 2].x > world.snake[world.snake.length - 1].x){
@@ -95,19 +96,19 @@
             switch (world.direction) {
                 case "up":
                     return make(world,
-                        {snake: cons(make(world.snake[0], { y: world.snake[0].y - 1 }),listMinOne(world.snake))});
+                        {snake: cons(make(world.snake[0], { y: world.snake[0].y - 1 }),listMinLast(world.snake))});
                     break;
                 case "down":
                     return make(world,
-                    {snake: cons(make(world.snake[0], { y: world.snake[0].y + 1 }), listMinOne(world.snake))});
+                    {snake: cons(make(world.snake[0], { y: world.snake[0].y + 1 }), listMinLast(world.snake))});
                     break;
                 case "left":
                     return make(world, {
-                        snake: cons(make(world.snake[0], { x: world.snake[0].x - 1 }),listMinOne(world.snake))});
+                        snake: cons(make(world.snake[0], { x: world.snake[0].x - 1 }),listMinLast(world.snake))});
                     break;
                 case "right":
                     return make(world, {
-                        snake: cons(make(world.snake[0], { x: world.snake[0].x + 1 }),listMinOne(world.snake))});
+                        snake: cons(make(world.snake[0], { x: world.snake[0].x + 1 }),listMinLast(world.snake))});
                     break;
                 default:
                     return make(world, {});
