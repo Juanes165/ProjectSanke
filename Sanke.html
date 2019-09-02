@@ -124,7 +124,7 @@
         function sketchProc(processing) {
 
             processing.setup = function () {
-                processing.frameRate(20);
+                processing.frameRate(10);
                 processing.size(40 * 20, 25 * 20);
                 processing.background(0, 0, 0);
                 processing.state = {
@@ -140,7 +140,7 @@
 
             //make(world, {snake: growSnake(world), foodPos: { x: random(), y: random() }, direction: "up"});
 
-            //funcion que recibe teclas como entrada
+            //Reacts to keyBoard events.
             processing.onKeyEvent = function (world, keyCode) {
                 switch (keyCode) {
                     case processing.UP:
