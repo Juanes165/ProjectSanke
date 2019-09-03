@@ -23,12 +23,12 @@
         }
 
         //recibe una lista y retorna una lista igual sin el ultimo valor
-        function listMinLast(list) {
+        function listMinOne(list) {
             if (length(list) == 1) {
                 return [];
             }
             else {
-                return cons(first(list), listMinLast(rest(list)));
+                return cons(first(list), listMinOne(rest(list)));
             }
         }
 
@@ -46,42 +46,35 @@
         //si el primer objeto es igual a alguno de la lista, termina el juego (la serpiente se comio)
         function ateSelf(world) {
             if (inList(world.snake[0], rest(world.snake))) {
-                return true;
+                make(world, { gameover: true })
+                return world;
             }
-            return false
         }
 
         //si la cabeza se sale del mapa, termina el juego
         function outTheMap(world) {
-            if ((world.snake[0].x > 10) && (world.snake[0].y > 10) && (world.snake[0].x <= 10) && (world.snake[0].y <= 10)) {
-                return true;
+            if ((world.snake[0].x > 10) && (world.snake[0].y > 10)          // cambiar valores segun los del canvas
+                && (world.snake[0].x <= 10) && (world.snake[0].y <= 10)) {
+                make(world, { gameover: true })
+                return world;
             }
-            return false
         }
 
-        function events(world){
-            if (ateSelf(world)) {
-                return movement(make(world, { gameover: true }));
-                }
-
-            if (outTheMap(world)) {
-                return movement(make(world, { gameover: true }));
-            }
-            
+        //if world.pause == true, returns same world over and over (pauses).
+        function pause(world) {
             if (world.pause == true) {
                 return world
             }
-            return movement(world)
         }
 
         //retorna true si la posicion de la cabeza es igual a la de la comida
         function gotFood(world) {
+            console.log(world.snake)
             if(world.snake[0].x == world.foodPos.x && world.snake[0].y == world.foodPos.y){
                 return make(world, {snake: growSnake(world), foodPos: { x: random(), y: random() }})
             }
             return world
         }
-
 
         function growSnake(world){
             //adds one square behind the last of the snake.
@@ -103,19 +96,19 @@
             switch (world.direction) {
                 case "up":
                     return make(world,
-                        {snake: cons(make(world.snake[0], { y: world.snake[0].y - 1 }),listMinLast(world.snake))});
+                        {snake: cons(make(world.snake[0], { y: world.snake[0].y - 1 }),listMinOne(world.snake))});
                     break;
                 case "down":
                     return make(world,
-                    {snake: cons(make(world.snake[0], { y: world.snake[0].y + 1 }), listMinLast(world.snake))});
+                    {snake: cons(make(world.snake[0], { y: world.snake[0].y + 1 }), listMinOne(world.snake))});
                     break;
                 case "left":
                     return make(world, {
-                        snake: cons(make(world.snake[0], { x: world.snake[0].x - 1 }),listMinLast(world.snake))});
+                        snake: cons(make(world.snake[0], { x: world.snake[0].x - 1 }),listMinOne(world.snake))});
                     break;
                 case "right":
                     return make(world, {
-                        snake: cons(make(world.snake[0], { x: world.snake[0].x + 1 }),listMinLast(world.snake))});
+                        snake: cons(make(world.snake[0], { x: world.snake[0].x + 1 }),listMinOne(world.snake))});
                     break;
                 default:
                     return make(world, {});
@@ -127,11 +120,12 @@
 
         }
 
+
         //funcion principal, no se que hace pero es importante
         function sketchProc(processing) {
 
             processing.setup = function () {
-                processing.frameRate(10);
+                processing.frameRate(20);
                 processing.size(40 * 20, 25 * 20);
                 processing.background(0, 0, 0);
                 processing.state = {
@@ -147,7 +141,7 @@
 
             //make(world, {snake: growSnake(world), foodPos: { x: random(), y: random() }, direction: "up"});
 
-            //Reacts to keyBoard events.
+            //funcion que recibe teclas como entrada
             processing.onKeyEvent = function (world, keyCode) {
                 switch (keyCode) {
                     case processing.UP:
@@ -197,12 +191,23 @@
 
             //executes itself in every f
             processing.onTic = function (world) {
-                return gotFood(events(world));
+                if (inList(world.snake[0], rest(world.snake))) {
+                    return make(world, { gameover: true });
+                }
+                if ((world.snake[0].x >= 40) || (world.snake[0].y >= 25)          // cambiar valores segun los del canvas
+                    || (world.snake[0].x < 0) || (world.snake[0].y < 0)) {
+                    return make(world, { gameover: true });
+                }
+                if (world.pause == true) {
+                    return world
+                }
+                /*ateSelf(world);
+                outTheMap(world);  //estas funciones estan definidas arriba pero al llamarse, no funcionan
+                pause(world);*/
+                return gotFood(movement(world));
             }
 
-
             function snakeLength(list) {
-                //draws squares of the snake.
                 if (length(list) == 1) {
                     processing.rect(first(list).x * 20, first(list).y * 20, 20, 20)
                 }
