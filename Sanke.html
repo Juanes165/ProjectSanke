@@ -139,8 +139,8 @@
 
             
 
-            //make(world, {snake: growSnake(world), foodPos: { x: random(), y: random() }, direction: "up"});
-
+            //make(world, {snake: growSnake(world), foodPos: { x: random(), y: random() }, direction:
+      
             //funcion que recibe teclas como entrada
             processing.onKeyEvent = function (world, keyCode) {
                 switch (keyCode) {
@@ -216,6 +216,7 @@
                     snakeLength(rest(list))
                 }
             }
+            
             //funcion que pinta el juego
             processing.drawGame = function (world) {
                 processing.background(100, 100, 250);
