@@ -156,7 +156,7 @@
         function sketchProc(processing) {
 
             processing.setup = function () {
-                processing.frameRate(10);
+                processing.frameRate(20);
                 processing.size(canvasSize * size, canvasSize * size);
                 processing.background(0, 0, 0);
                 processing.state = {
@@ -345,12 +345,6 @@
                     processing.state = processing.onKeyEvent(make(processing.state, {canPress: false}), processing.keyCode);
                 }
                 }
-
-            //Executes when key is released.
-            processing.keyReleased = function(){ 
-                return make(processing.state,{canPress: true})
-            }
-            
 
             processing.mouseClicked = function () {
                 processing.state = processing.onMouseEvent(processing.state,
