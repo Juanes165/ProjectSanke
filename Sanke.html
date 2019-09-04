@@ -152,7 +152,7 @@
         function sketchProc(processing) {
 
             processing.setup = function () {
-                processing.frameRate(15);
+                processing.frameRate(difficulty);
                 processing.size(25 * size, 25 * size);
                 processing.background(0, 0, 0);
                 processing.state = {
@@ -168,6 +168,7 @@
                 headRight = processing.loadImage("images/headRight.jpg")
                 headUp = processing.loadImage("images/headUp.jpg")
                 headleft = processing.loadImage("images/headLeft.jpg")
+                difficulty = 10
             }
 
 
@@ -346,6 +347,20 @@
                 processing.state = processing.onMouseEvent(processing.state,
                     { action: "click" });
             }
+
+            processing.setDifficulty = function (dif) {
+                switch(dif){
+                    case "easy":
+                        difficulty = 5
+                        break;
+                    case "medium":
+                        difficulty = 10
+                        break;
+                    case "hard":
+                        difficulty = 15
+                        break;
+                }
+            }
         }
         var canvas = document.getElementById("canvas");
 
@@ -354,6 +369,15 @@
     <br>
     <button class="restartButton" onClick="processingInstance.restart()">
         RESTART
+    </button>
+    <button class="restartButton" onClick="processingInstance.setDifficulty('easy')">
+        EASY
+    </button>
+    <button class="restartButton" onClick="processingInstance.setDifficulty('medium')">
+        MEDIUM
+    </button>
+    <button class="restartButton" onClick="processingInstance.setDifficulty('hard')">
+        HARD
     </button>
 </body>
 
