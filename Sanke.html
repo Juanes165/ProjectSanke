@@ -152,6 +152,7 @@
         function sketchProc(processing) {
 
             processing.setup = function () {
+                difficulty = 5
                 processing.frameRate(difficulty);
                 processing.size(25 * size, 25 * size);
                 processing.background(0, 0, 0);
@@ -168,7 +169,7 @@
                 headRight = processing.loadImage("images/headRight.jpg")
                 headUp = processing.loadImage("images/headUp.jpg")
                 headleft = processing.loadImage("images/headLeft.jpg")
-                difficulty = 10
+                
             }
 
 
@@ -349,6 +350,7 @@
             }
 
             processing.setDifficulty = function (dif) {
+                console.log(difficulty);
                 switch(dif){
                     case "easy":
                         difficulty = 5
