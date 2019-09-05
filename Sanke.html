@@ -59,8 +59,10 @@
                 return world
             }
         }
+
         //retorna true si la posicion de la cabeza es igual a la de la comida
         function gotFood(world) {
+
             if(world.snake[0].x == world.foodPos.x && world.snake[0].y == world.foodPos.y){
                 return make(world, {snake: growSnake(world), foodPos: foodSpawn(world)})
             }
@@ -106,6 +108,7 @@
                     return make(world, {});
             }
         }
+
         //esta funcion debe verificar que la comida no aparezca dentro de la serpiente
         function foodSpawn(world) {
             //if food's position is same as any square of the snake..
@@ -115,6 +118,7 @@
             }
             return val
         }
+
         //funcion principal, no se que hace pero es importante
         function sketchProc(processing) {
             processing.setup = function () {
@@ -134,6 +138,7 @@
                 headUp = processing.loadImage("images/headUp.jpg")
                 headleft = processing.loadImage("images/headLeft.jpg")
             }
+
             //make(world, {snake: growSnake(world), foodPos: { x: random(), y: random() }, direction: "up"});
             //funcion que recibe teclas como entrada
             processing.onKeyEvent = function (world, keyCode) {
@@ -180,7 +185,9 @@
                         return make(world, {});
                 }
             }
+
             processing.onTic = function (world) {
+
                 //If player ate it self or got out of the canvas, gameover is set to true.
                 if (ateSelf(world) || outTheMap(world)) {
                     return make(world, { gameover: true });
@@ -192,6 +199,7 @@
                 if (!world.playing) {
                     return world
                 }
+
                 return gotFood(movement(world));
             }
             /**
@@ -234,7 +242,7 @@
             * @param {object} world
             * @returns {undefined}
             */
-            function gO(world) {
+            function gameOver(world) {
                 if (world.gameover == true) {
                     processing.textFont(processing.PFont, 50);
                     processing.text("GAME OVER", 50, 210);
@@ -255,7 +263,8 @@
                 drawSnakeBody(rest(world.snake))
                 drawSnakeHead(world)
                 processing.fill(255, 0, 0);
-                gO(world);
+
+                gameOver(world);
                 pause(world);
                 if (world.playing == false) {
                     processing.textFont(processing.PFont, 50);
