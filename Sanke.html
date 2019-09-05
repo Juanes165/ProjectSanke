@@ -359,20 +359,6 @@
                     { action: "click" });
             }
 
-            processing.setDifficulty = function (dif) {
-                switch(dif){
-                    case "easy":
-                        difficulty = 5
-                        break;
-                    case "medium":
-                        difficulty = 10
-                        break;
-                    case "hard":
-                        difficulty = 15
-                        break;
-                }
-            }
-        }
         var canvas = document.getElementById("canvas");
 
         var processingInstance = new Processing(canvas, sketchProc);
@@ -380,15 +366,6 @@
     <br>
     <button class="restartButton" onClick="processingInstance.restart()">
         RESTART
-    </button>
-    <button class="restartButton" onClick="processingInstance.setDifficulty('easy')">
-        EASY
-    </button>
-    <button class="restartButton" onClick="processingInstance.setDifficulty('medium')">
-        MEDIUM
-    </button>
-    <button class="restartButton" onClick="processingInstance.setDifficulty('hard')">
-        HARD
     </button>
 </body>
 
