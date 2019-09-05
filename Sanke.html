@@ -32,6 +32,7 @@
         let { append, cons, first, isEmpty, isList, length, rest } = functionalLight;
 
         const size = 20
+        const canvasSize = 25
         //crea un objeto nuevo a partir de un objeto y un atributo
         function make(data, attribute) {
             return Object.assign({}, data, attribute);
@@ -39,7 +40,7 @@
 
         //retorna un numero al azar entre 0 y 20
         function random() {
-            return Math.round(Math.random() * 24)
+            return Math.round(Math.random() * (canvasSize-1))
         }
 
         //recibe una lista y retorna una lista igual sin el ultimo valor
@@ -73,7 +74,7 @@
 
         //si la cabeza se sale del mapa, termina el juego
         function outTheMap(world) {
-            if ((world.snake[0].x >= 40) || (world.snake[0].y >= 25) || (world.snake[0].x < 0) || (world.snake[0].y < 0)) {
+            if ((world.snake[0].x >= canvasSize) || (world.snake[0].y >= canvasSize) || (world.snake[0].x < 0) || (world.snake[0].y < 0)) {
                 return true;
             }
             return false
@@ -155,13 +156,8 @@
         function sketchProc(processing) {
 
             processing.setup = function () {
-<<<<<<< Updated upstream
-                difficulty = 5
-                processing.frameRate(difficulty);
-=======
                 processing.frameRate(10);
->>>>>>> Stashed changes
-                processing.size(25 * size, 25 * size);
+                processing.size(canvasSize * size, canvasSize * size);
                 processing.background(0, 0, 0);
                 processing.state = {
                     direction: "right",
@@ -229,7 +225,6 @@
             }
 
             //executes itself in every frame
-
             processing.onTic = function (world) {
 
                 //If player ate it self or got out of the canvas, gameover is set to true.
@@ -238,22 +233,11 @@
                 }
 
                 //If pause is set to true, returns same world constantly.
-                if (world.pause || world.gameover) {
+                if (world.pause || world.gameover || !world.playing) {
                     return world
                 }
-                if (!world.playing) {
-                    return world
-                }
-
-<<<<<<< Updated upstream
-                return gotFood(movement(world));
-=======
-                /*ateSelf(world);
-                outTheMap(world);  //estas funciones estan definidas arriba pero al llamarse, no funcionan
-                pause(world);*/
 
                 return make(gotFood(movement(world)), {canPress:true});
->>>>>>> Stashed changes
 
 
             }
@@ -315,7 +299,7 @@
                 if (world.playing == false) {
                     processing.textFont(processing.PFont, 50);
 
-                    processing.text("CLICK TO START", 240, 240);
+                    processing.text("CLICK TO START", canvasSize,(canvasSize*20)/2);
 
                 }
                 processing.textFont(processing.PFont, 20);
@@ -333,7 +317,8 @@
              * */
             processing.restart = function () {
                 processing.state = {
-                    direction: "right", 
+                    direction: "right",
+                    canPress: true,
                     foodPos: { x: random(), y: random() },
                     snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }],
                     pause: false,
@@ -356,11 +341,14 @@
                 return world
             }
 
+            //Executes when key is pressed.
             processing.keyPressed = function () {
                 if(processing.state.canPress){
                     processing.state = processing.onKeyEvent(make(processing.state, {canPress: false}), processing.keyCode);
                 }
                 }
+
+            //Executes when key is released.
             processing.keyReleased = function(){ 
                 return make(processing.state,{canPress: true})
             }
@@ -372,7 +360,6 @@
             }
 
             processing.setDifficulty = function (dif) {
-                console.log(difficulty);
                 switch(dif){
                     case "easy":
                         difficulty = 5
