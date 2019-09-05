@@ -112,6 +112,9 @@
             }
         }
 
+        //cons(make(world.snake[0], { y: world.snake[0].y - 1 }), listMinOne(world.snake))
+    
+
         function movement(world) {
             switch (world.direction) {
                 case "up":
@@ -152,12 +155,17 @@
         function sketchProc(processing) {
 
             processing.setup = function () {
+<<<<<<< Updated upstream
                 difficulty = 5
                 processing.frameRate(difficulty);
+=======
+                processing.frameRate(10);
+>>>>>>> Stashed changes
                 processing.size(25 * size, 25 * size);
                 processing.background(0, 0, 0);
                 processing.state = {
-                    direction: "right", 
+                    direction: "right",
+                    canPress: true,
                     foodPos: { x: random(), y: random() },
                     snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }],
                     pause: false,
@@ -182,28 +190,28 @@
                             return world
                         }
                         else {
-                            return make(world, { direction: "up" });
+                            return make(world, { direction: "up"});
                         }
                     case processing.DOWN:
                         if (world.direction == "up") {
                             return world
                         }
                         else {
-                            return make(world, { direction: "down" });
+                            return make(world, { direction: "down"});
                         }
                     case processing.LEFT:
                         if (world.direction == "right") {
                             return world
                         }
                         else {
-                            return make(world, { direction: "left" });
+                            return make(world, { direction: "left"});
                         }
                     case processing.RIGHT:
                         if (world.direction == "left") {
                             return world
                         }
                         else {
-                            return make(world, { direction: "right" });
+                            return make(world, { direction: "right"});
                         }
                     case 80: //la P es la letra 80
                         if (world.pause == false) {
@@ -237,7 +245,15 @@
                     return world
                 }
 
+<<<<<<< Updated upstream
                 return gotFood(movement(world));
+=======
+                /*ateSelf(world);
+                outTheMap(world);  //estas funciones estan definidas arriba pero al llamarse, no funcionan
+                pause(world);*/
+
+                return make(gotFood(movement(world)), {canPress:true});
+>>>>>>> Stashed changes
 
 
             }
@@ -341,8 +357,14 @@
             }
 
             processing.keyPressed = function () {
-                processing.state = processing.onKeyEvent(processing.state, processing.keyCode);
+                if(processing.state.canPress){
+                    processing.state = processing.onKeyEvent(make(processing.state, {canPress: false}), processing.keyCode);
+                }
+                }
+            processing.keyReleased = function(){ 
+                return make(processing.state,{canPress: true})
             }
+            
 
             processing.mouseClicked = function () {
                 processing.state = processing.onMouseEvent(processing.state,
