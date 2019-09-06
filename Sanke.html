@@ -11,6 +11,7 @@
     <script src="web-lib/functional-light.js"></script>
     <script>
         let { append, cons, first, isEmpty, isList, length, rest } = functionalLight;
+
         const size = 20
         const canvasSize = 25
         const easy = 2
@@ -225,123 +226,141 @@
                 return make(gotFood(movement(world)), { canPress: true });
             }
 
-        }
-        /**
-         * Executes the function 'image' from processing as many times as the list length
-         * @param {list} list
-         * @return {undefined}
-         * */
-        function drawSnakeBody(list) {
-            if (length(list) == 1) {
-                processing.image(body, first(list).x * size, first(list).y * size)
+            /**
+             * Executes the function 'image' from processing as many times as the list length
+             * @param {list} list
+             * @return {undefined}
+             * */
+            function drawSnakeBody(list) {
+                if (length(list) == 1) {
+                    processing.image(body, first(list).x * size, first(list).y * size)
+                }
+                else {
+                    processing.image(body, first(list).x * size, first(list).y * size)
+                    drawSnakeBody(rest(list))
+                }
             }
-            else {
-                processing.image(body, first(list).x * size, first(list).y * size)
-                drawSnakeBody(rest(list))
+            /**
+             * Executes the function 'image' from processing to draw an image based on the 'direction' atributte
+             * @param {object} world 
+             * @return {undefined}
+             * */
+            function drawSnakeHead(world) {
+                switch (world.direction) {
+                    case "up":
+                        processing.image(headUp, world.snake[0].x * size, world.snake[0].y * size)
+                        break;
+                    case "down":
+                        processing.image(headDown, world.snake[0].x * size, world.snake[0].y * size)
+                        break;
+                    case "left":
+                        processing.image(headleft, world.snake[0].x * size, world.snake[0].y * size)
+                        break;
+                    case "right":
+                        processing.image(headRight, world.snake[0].x * size, world.snake[0].y * size)
+                        break;
+                }
             }
-        }
-        /**
-         * Executes the function 'image' from processing to draw an image based on the 'direction' atributte
-         * @param {object} world 
-         * @return {undefined}
-         * */
-        function drawSnakeHead(world) {
-            switch (world.direction) {
-                case "up":
-                    processing.image(headUp, world.snake[0].x * size, world.snake[0].y * size)
-                    break;
-                case "down":
-                    processing.image(headDown, world.snake[0].x * size, world.snake[0].y * size)
-                    break;
-                case "left":
-                    processing.image(headleft, world.snake[0].x * size, world.snake[0].y * size)
-                    break;
-                case "right":
-                    processing.image(headRight, world.snake[0].x * size, world.snake[0].y * size)
-                    break;
+
+             /**
+            * if world.gameover equals true returns the game over message
+            * @param {object} world
+            * @returns {undefined}
+            */
+            function gameOver(world) {
+                if (world.gameover == true) {
+                    processing.textFont(processing.PFont, 50);
+                    processing.text("GAME OVER", 50, 210);
+                }
             }
-        }
-
-        //Draws a world.
-        processing.drawGame = function (world) {
-            processing.background(100, 100, 250);
-            processing.fill(0, 255, 0)
-            processing.rect(world.foodPos.x * 20, world.foodPos.y * 20, 20, 20)
-            processing.fill(200, 200, 200);
-            drawSnakeBody(rest(world.snake))
-            drawSnakeHead(world)
-            processing.fill(255, 0, 0);
-
-            gameOver(world);
-            pause(world);
-            if (world.playing == false) {
-                processing.textFont(processing.PFont, 50);
-                processing.text("CLICK TO START", canvasSize, (canvasSize * 20) / 2);
-
+            function pause(world){
+                if (world.pause == true) {
+                    processing.textFont(processing.PFont, 50);
+                    processing.text("PAUSED", 105, 210);
+                }  
             }
-            processing.textFont(processing.PFont, 20);
-            processing.text("SCORE: " + (length(world.snake) - 3), 20, 390);
-        }
 
+            //Draws a world.
+            processing.drawGame = function (world) {
+                processing.background(100, 100, 250);
+                processing.fill(0, 255, 0)
+                processing.rect(world.foodPos.x * 20, world.foodPos.y * 20, 20, 20)
+                processing.fill(200, 200, 200);
+                drawSnakeBody(rest(world.snake))
+                drawSnakeHead(world)
+                processing.fill(255, 0, 0);
+                gameOver(world);
+                pause(world);
+                if (world.playing == false) {
+                    processing.textFont(processing.PFont, 50);
+                    processing.text("CLICK TO START", canvasSize, (canvasSize * 20) / 2);
 
-        //This function is called repeatedly, calls drawgame and onTic.
-        processing.draw = function () {
-            processing.state = processing.onTic(processing.state);
-            processing.drawGame(processing.state);
-        };
-
-
-        /*Changes framerate if world is not currently playing.
-        This makes it necessary for difficult to be set before starting to play.*/
-        processing.changeFrameRate = function (frames) {
-            if (!processing.state.playing) {
-                processing.state = make(processing.state, { frameRate: frames });
+                }
+                processing.textFont(processing.PFont, 20);
+                processing.text("SCORE: " + (length(world.snake) - 3), 20, 390);
             }
-        }
 
-        /**
-        * Re asing the initial world to processing.state
-         * @returns {object}
-         * */
-        processing.restart = function () {
-            processing.state = {
-                direction: "right",
-                canPress: true,
-                foodPos: { x: random(), y: random() },
-                frameRate: medium,
-                snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }],
-                pause: false,
-                playing: false,
-                gameover: false
+
+            //This function is called repeatedly, calls drawgame and onTic.
+            processing.draw = function () {
+                processing.state = processing.onTic(processing.state);
+                processing.drawGame(processing.state);
+            };
+
+
+            /*Changes framerate if world is not currently playing.
+            This makes it necessary for difficult to be set before starting to play.*/
+            processing.changeFrameRate = function (frames) {
+                if (!processing.state.playing) {
+                    processing.state = make(processing.state, { frameRate: frames });
+                }
             }
-        }
 
-
-        /**
-        * Changes the playing state from false to true if event.action is 'click'
-        @param {object} world
-        @param {object} event
-        @returns {object}
-        @example make(world, { playing: true })
-        */
-        processing.onMouseEvent = function (world, event) {
-            if (event.action === 'click') {
-                return make(world, { playing: true })
+            /**
+            * Re asing the initial world to processing.state
+             * @returns {object}
+             * */
+            processing.restart = function () {
+                processing.state = {
+                    direction: "right",
+                    canPress: true,
+                    foodPos: { x: random(), y: random() },
+                    frameRate: medium,
+                    snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }],
+                    pause: false,
+                    playing: false,
+                    gameover: false
+                }
             }
-            return world
-        }
 
-        //Executes when key is pressed.
-        processing.keyPressed = function () {
-            if (processing.state.canPress) {
-                processing.state = processing.onKeyEvent(make(processing.state, { canPress: false }), processing.keyCode);
+
+            /**
+            * Changes the playing state from false to true if event.action is 'click'
+            @param {object} world
+            @param {object} event
+            @returns {object}
+            @example make(world, { playing: true })
+            */
+            processing.onMouseEvent = function (world, event) {
+                if (event.action === 'click') {
+                    return make(world, { playing: true })
+                }
+                return world
             }
-        }
+
+            //Executes when key is pressed.
+            processing.keyPressed = function () {
+                if (processing.state.canPress) {
+                    processing.state = processing.onKeyEvent(make(processing.state, { canPress: false }), processing.keyCode);
+                }
+            }
 
 
-        processing.mouseClicked = function () {
-            processing.state = processing.onMouseEvent(processing.state,
-                { action: "click" });
+            processing.mouseClicked = function () {
+                processing.state = processing.onMouseEvent(processing.state,
+                    { action: "click" });
+            }
+
         }
 
         var canvas = document.getElementById("canvas");
