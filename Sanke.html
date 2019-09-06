@@ -3,8 +3,8 @@
 
 <head>
     <title>SANKE</title>
-    <meta charset="utf-8"/>
-    <html lang="en"> 
+    <meta charset="utf-8" />
+    <html lang="en">
 
     <!-- Style for the restart button -->
     <style type="text/css">
@@ -56,15 +56,15 @@
         const hard = easy * 3
 
         const firstWorld = {
-                    direction: "right",
-                    canPress: true,
-                    frameRate: medium,
-                    foodPos: { x: random(), y: random() },
-                    snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }],
-                    pause: false,
-                    score: 0,
-                    playing: false,
-                    gameover: false
+            direction: "right",
+            canPress: true,
+            frameRate: medium,
+            foodPos: { x: random(), y: random() },
+            snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }],
+            pause: false,
+            score: 0,
+            playing: false,
+            gameover: false
         }
 
         //crea un objeto nuevo a partir de un objeto y un atributo
@@ -119,7 +119,7 @@
 
         function gotFood(world) {
             if (world.snake[0].x == world.foodPos.x && world.snake[0].y == world.foodPos.y) {
-                return make(world, { snake: growSnake(world), foodPos: foodSpawn(world), score: world.score+1 })
+                return make(world, { snake: growSnake(world), foodPos: foodSpawn(world), score: world.score + 1 })
             }
             return world;
         }
@@ -180,22 +180,19 @@
 
         //funcion principal, no se que hace pero es importante
         function sketchProc(processing) {
-            const body = processing.loadImage("images/defaultSkin/body.jpg")
-            const headDown = processing.loadImage("images/defaultSkin/headDown.jpg")
-            const headRight = processing.loadImage("images/defaultSkin/headRight.jpg")
-            const headUp = processing.loadImage("images/defaultSkin/headUp.jpg")
-            const headleft = processing.loadImage("images/defaultSkin/headLeft.jpg")
+            body = processing.loadImage("images/defaultSkin/body.jpg")
+            headDown = processing.loadImage("images/defaultSkin/headDown.jpg")
+            headRight = processing.loadImage("images/defaultSkin/headRight.jpg")
+            headUp = processing.loadImage("images/defaultSkin/headUp.jpg")
+            headleft = processing.loadImage("images/defaultSkin/headLeft.jpg")
 
 
             processing.setup = function () {
                 processing.size(canvasSize * size, canvasSize * size);
                 processing.background(0, 0, 0);
                 processing.state = firstWorld
-                
+
             }
-
-            
-
             //make(world, {snake: growSnake(world), foodPos: { x: random(), y: random() }, direction: "up"});
             //funcion que recibe teclas como entrada
             processing.onKeyEvent = function (world, keyCode) {
@@ -259,11 +256,11 @@
                 }
 
                 //If is game is not playing.
-                if(!world.playing){
+                if (!world.playing) {
                     return world
                 }
 
-            return make(gotFood(movement(world)), { canPress: true });
+                return make(gotFood(movement(world)), { canPress: true });
 
             }
             /**
@@ -323,17 +320,18 @@
                 }
             }
             //Click message.
-            function clickMs(world){
+            function clickMs(world) {
                 if (!world.playing) {
                     processing.textFont(processing.PFont, 50);
                     processing.text("CLICK TO START", canvasSize, (canvasSize * 20) / 2);
-            }
-            }
+                }
+            };
+
             //Score message.
-            function scoreMs(world){
+            function scoreMs(world) {
                 processing.textFont(processing.PFont, 20);
                 processing.text("SCORE: " + world.score, 20, 390);
-            }
+            };
 
 
             //Draws the game.
@@ -350,12 +348,12 @@
                 pauseMs(world);
                 clickMs(world);
                 scoreMs(world);
-            }
-            
+            };
+
             processing.draw = function () {
                 processing.state = processing.onTic(processing.state);
                 processing.drawGame(processing.state);
-                
+
             };
 
             /**
@@ -432,7 +430,7 @@
     <button class="skinButton" onClick="processingInstance.changeSkin('skin1')">
         Skin 1
     </button>
-        
+
 </body>
 
 </html>
