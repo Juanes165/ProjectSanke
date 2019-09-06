@@ -33,17 +33,23 @@
 
         const size = 20
         const canvasSize = 25
-        //crea un objeto nuevo a partir de un objeto y un atributo
+        const easy = 2
+        const medium = easy*2
+        const hard = easy*3
+        
+        
+
+        //Creates a new object with another object and modifying/adding a given attribute to it.
         function make(data, attribute) {
             return Object.assign({}, data, attribute);
         }
 
-        //retorna un numero al azar entre 0 y 20
+        //Returns a random number between 0 and canvasSize-1.
         function random() {
             return Math.round(Math.random() * (canvasSize-1))
         }
 
-        //recibe una lista y retorna una lista igual sin el ultimo valor
+        //Returns same list without last element.
         function listMinOne(list) {
             if (length(list) == 1) {
                 return [];
@@ -53,7 +59,7 @@
             }
         }
 
-        //retorna true si el elemento esta dentro de la lista (solo recibe objetos)
+        //Checks if element is inside list.
         function inList(element, list) {
             if (isEmpty(list)) {
                 return false
@@ -64,7 +70,7 @@
             return inList(element, rest(list))
         }
 
-        //si el primer objeto es igual a alguno de la lista, termina el juego (la serpiente se comio)
+        //Checks if head's position equals any of the rest of the body.
         function ateSelf(world) {
             if (inList(world.snake[0], rest(world.snake))) {
                 return true;
@@ -72,7 +78,7 @@
             return false;
         }
 
-        //si la cabeza se sale del mapa, termina el juego
+        //Checks if snake's head got out of the canvas.
         function outTheMap(world) {
             if ((world.snake[0].x >= canvasSize) || (world.snake[0].y >= canvasSize) || (world.snake[0].x < 0) || (world.snake[0].y < 0)) {
                 return true;
@@ -80,14 +86,14 @@
             return false
         }
 
-        //if world.pause == true, returns same world over and over (pauses).
+        //If world.pause == true, returns same world.
         function pause(world) {
             if (world.pause == true) {
                 return world
             }
         }
 
-        //retorna true si la posicion de la cabeza es igual a la de la comida
+        //Returns true if food's position is equal to that of the snake's head.
         function gotFood(world) {
 
             if(world.snake[0].x == world.foodPos.x && world.snake[0].y == world.foodPos.y){
@@ -96,8 +102,9 @@
             return world;
         }
 
+
+        //Adds one square behind the last of the snake.
         function growSnake(world) {
-            //adds one square behind the last of the snake.
             const len = length(world.snake)
             if (world.snake[len - 2].x > world.snake[len - 1].x) {
                 return append(world.snake, { x: world.snake[len - 1].x - 1, y: world.snake[len - 1].y })
@@ -113,9 +120,8 @@
             }
         }
 
-        //cons(make(world.snake[0], { y: world.snake[0].y - 1 }), listMinOne(world.snake))
-    
-
+        
+        //Moves the snake depending on world.direction.
         function movement(world) {
             switch (world.direction) {
                 case "up":
@@ -141,9 +147,8 @@
             }
         }
 
-        //esta funcion debe verificar que la comida no aparezca dentro de la serpiente
+        //Makes sure food never spawns under the snake.
         function foodSpawn(world) {
-            //if food's position is same as any square of the snake..
             const val = {x: random(), y: random()}
             if(inList(val, world.snake)){
                 return foodSpawn(world)
@@ -152,33 +157,32 @@
         }
 
 
-        //funcion principal, no se que hace pero es importante
+
         function sketchProc(processing) {
 
+            const body = processing.loadImage("images/snake.jpg")
+            const headDown = processing.loadImage("images/headDown.jpg")
+            const headRight = processing.loadImage("images/headRight.jpg")
+            const headUp = processing.loadImage("images/headUp.jpg")
+            const headleft = processing.loadImage("images/headLeft.jpg")
+
             processing.setup = function () {
-                processing.frameRate(20);
                 processing.size(canvasSize * size, canvasSize * size);
                 processing.background(0, 0, 0);
                 processing.state = {
                     direction: "right",
                     canPress: true,
                     foodPos: { x: random(), y: random() },
+                    frameRate: medium,
                     snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }],
                     pause: false,
                     playing: false,
                     gameover: false
                 }
-                body = processing.loadImage("images/snake.jpg")
-                headDown = processing.loadImage("images/headDown.jpg")
-                headRight = processing.loadImage("images/headRight.jpg")
-                headUp = processing.loadImage("images/headUp.jpg")
-                headleft = processing.loadImage("images/headLeft.jpg")
                 
             }
 
-
-            //make(world, {snake: growSnake(world), foodPos: { x: random(), y: random() }, direction: "up"});
-            //funcion que recibe teclas como entrada
+            //Modifies direction and pause atributes of the world given a right keyCode.
             processing.onKeyEvent = function (world, keyCode) {
                 switch (keyCode) {
                     case processing.UP:
@@ -211,11 +215,11 @@
                         }
                     case 80: //la P es la letra 80
                         if (world.pause == false) {
-                            return make(world, { pause: true })
+                            return make(world, { pause: true, canPress: true })
                             break;
                         }
                         else {
-                            return make(world, { pause: false })
+                            return make(world, { pause: false, canPress: true})
                             break;
                         }
                     default:
@@ -224,20 +228,21 @@
                 }
             }
 
-            //executes itself in every frame
+            //Executes itself every frameRate.
             processing.onTic = function (world) {
+                processing.frameRate(world.frameRate);
 
-                //If player ate it self or got out of the canvas, gameover is set to true.
-                if (ateSelf(world) || outTheMap(world)) {
-                    return make(world, { gameover: true });
-                }
-
-                //If pause is set to true, returns same world constantly.
+                //If pause is set to true, the game is over or is not playing, returns same world constantly.
                 if (world.pause || world.gameover || !world.playing) {
-                    return world
+                    return make(world)
                 }
 
-                return make(gotFood(movement(world)), {canPress:true});
+                //If player ate its self or got out of the canvas, gameover is set to true.
+                if (ateSelf(world) || outTheMap(movement(world))){
+                    return make(world, { gameover: true, canPress: false});
+                }
+
+                return make(gotFood(movement(world)), {canPress: true});
             }
 
             /**
@@ -277,7 +282,7 @@
                 }
             }
 
-            //funcion que pinta el juego
+            //Draws a world.
             processing.drawGame = function (world) {
                 processing.background(100, 100, 250);
                 processing.fill(0, 255, 0)
@@ -304,10 +309,21 @@
                 processing.text("SCORE: " + (length(world.snake) - 3), 20, 390);
             }
 
+
+            //This function is called repeatedly, calls drawgame and onTic.
             processing.draw = function () {
-                processing.drawGame(processing.state);
                 processing.state = processing.onTic(processing.state);
+                processing.drawGame(processing.state);
             };
+
+
+            /*Changes framerate if world is not currently playing.
+            This makes it necessary for difficult to be set before starting to play.*/
+            processing.changeFrameRate = function(frames){
+                if(!processing.state.playing){
+                processing.state = make(processing.state, {frameRate: frames});
+                }
+            }
 
             /**
             * Re asing the initial world to processing.state
@@ -318,12 +334,14 @@
                     direction: "right",
                     canPress: true,
                     foodPos: { x: random(), y: random() },
+                    frameRate: medium,
                     snake: [{ x: 3, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 1 }],
                     pause: false,
                     playing: false,
                     gameover: false
                 }
             }
+
 
             /**
             * Changes the playing state from false to true if event.action is 'click'
@@ -346,40 +364,29 @@
                 }
                 }
 
+
             processing.mouseClicked = function () {
                 processing.state = processing.onMouseEvent(processing.state,
                     { action: "click" });
             }
 
-            processing.setDifficulty = function (dif) {
-                switch(dif){
-                    case "easy":
-                        difficulty = 5
-                        break;
-                    case "medium":
-                        difficulty = 10
-                        break;
-                    case "hard":
-                        difficulty = 15
-                        break;
-                }
-            }
         }
         var canvas = document.getElementById("canvas");
 
         var processingInstance = new Processing(canvas, sketchProc);
+
     </script>
     <br>
     <button class="restartButton" onClick="processingInstance.restart()">
         RESTART
     </button>
-    <button class="restartButton" onClick="processingInstance.setDifficulty('easy')">
+    <button class="restartButton" onClick="processingInstance.changeFrameRate(easy)">
         EASY
     </button>
-    <button class="restartButton" onClick="processingInstance.setDifficulty('medium')">
+    <button class="restartButton" onClick="processingInstance.changeFrameRate(medium)">
         MEDIUM
     </button>
-    <button class="restartButton" onClick="processingInstance.setDifficulty('hard')">
+    <button class="restartButton" onClick="processingInstance.changeFrameRate(hard)">
         HARD
     </button>
 </body>
