@@ -265,6 +265,8 @@
                     drawSnakeBody(rest(list))
                 }
             }
+
+
             /**
              * Executes the function 'image' from processing to draw an image based on the 'direction' atributte
              * @param {object} world 
@@ -286,6 +288,7 @@
                         break;
                 }
             }
+
             /**
            * if world.gameover equals to true returns the game over message
            * @param {object} world
@@ -297,12 +300,14 @@
                     processing.text("GAME OVER", 50, 210);
                 }
             }
+
             function pause(world) {
                 if (world.pause == true) {
                     processing.textFont(processing.PFont, 50);
                     processing.text("PAUSED", 105, 210);
                 }
             }
+
             //funcion que pinta el juego
             processing.drawGame = function (world) {
                 processing.background(100, 100, 250);
@@ -324,9 +329,10 @@
                 processing.text("SCORE: " + (length(world.snake) - 3), 20, 390);
             }
             processing.draw = function () {
-                processing.drawGame(processing.state);
                 processing.state = processing.onTic(processing.state);
+                processing.drawGame(processing.state);
             };
+
             /**
             * Re asing the initial world to processing.state
              * @returns {object}
