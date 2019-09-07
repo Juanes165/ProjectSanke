@@ -321,7 +321,7 @@
             }
             //Pause message.
             function pauseMs(world) {
-                if (world.pause == true) {
+                if (world.pause == true && !world.gameover) {
                     processing.textFont(processing.PFont, 50);
                     processing.text("PAUSED", 105, 210);
                 }
@@ -384,8 +384,11 @@
 
             //Executes when key is pressed.
             processing.keyPressed = function () {
-                if (processing.state.canPress || processing.keyCode == 80) {
+                if ((processing.state.canPress && processing.state.playing) || processing.keyCode == 80) {
                     processing.state = processing.onKeyEvent(make(processing.state, { canPress: false }), processing.keyCode);
+                }
+                else{
+                    return 0
                 }
             }
 
@@ -438,6 +441,7 @@
     </button>
     <button class="restartButton" onClick="processingInstance.changeFrameRate(hard)">
         HARD
+    </button>
     <button class="skinButton" onClick="processingInstance.changeSkin('defaultSkin')">
         Default Skin
     </button>
