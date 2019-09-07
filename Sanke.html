@@ -169,7 +169,7 @@
                     });
                     break;
                 default:
-                    return make(world, {});
+                    return world;
             }
         }
         
@@ -335,7 +335,7 @@
             };
 
             //Score message.
-            function scoreMs(world) {
+            function scoreLabel(world) {
                 processing.textFont(processing.PFont, 20);
                 processing.text("SCORE: " + world.score, 20, 390);
             };
@@ -351,11 +351,10 @@
                 drawSnakeHead(world)
                 processing.fill(255, 0, 0);
 
-
                 gameOverMs(world);
                 pauseMs(world);
                 clickMs(world);
-                scoreMs(world);
+                scoreLabel(world);
             };
 
 
@@ -372,14 +371,14 @@
              * */
             processing.restart = function () {
                 processing.state = firstWorld;
-            }
+            };
 
             //Changes world.framerate.
             processing.changeFrameRate = function (frames) {
                 if (!processing.state.playing) {
                     processing.state = make(processing.state, { frameRate: frames });
                 }
-            }
+            };
 
 
             //Executes when key is pressed.
@@ -390,7 +389,7 @@
                 else{
                     return 0
                 }
-            }
+            };
 
             //Changes source of skin variables.
             processing.changeSkin = function (skin) {
