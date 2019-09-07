@@ -230,7 +230,7 @@
                         }
                     case 80:
                         if (world.pause == false) {
-                            return make(world, { pause: true })
+                            return make(world, { pause: true, canPress: true })
                             break;
                         }
                         else {
@@ -253,6 +253,7 @@
                 if (ateSelf(movement(world)) || outTheMap(movement(world))) {
                     return make(world, { gameover: true, canPress: false });
                 }
+              
                 //If pause or gameover is set to true, returns same world constantly.
                 if (world.pause || world.gameover) {
                     return world
@@ -350,11 +351,13 @@
                 drawSnakeHead(world)
                 processing.fill(255, 0, 0);
 
+
                 gameOverMs(world);
                 pauseMs(world);
                 clickMs(world);
                 scoreMs(world);
             };
+
 
             //Makes current world's state equal to onTic's output and draws the world. Executes several times a second.
             processing.draw = function () {
@@ -395,6 +398,14 @@
                         headRight = processing.loadImage("images/skin1/headRight.jpg")
                         headUp = processing.loadImage("images/skin1/headUp.jpg")
                         headleft = processing.loadImage("images/skin1/headLeft.jpg")
+                        break;
+                    case 'defaultSkin':
+                        body = processing.loadImage("images/defaultSkin/body.jpg")
+                        headDown = processing.loadImage("images/defaultSkin/headDown.jpg")
+                        headRight = processing.loadImage("images/defaultSkin/headRight.jpg")
+                        headUp = processing.loadImage("images/defaultSkin/headUp.jpg")
+                        headleft = processing.loadImage("images/defaultSkin/headLeft.jpg")
+                        break;
                 }
             }
 
@@ -427,11 +438,12 @@
     </button>
     <button class="restartButton" onClick="processingInstance.changeFrameRate(hard)">
         HARD
+    <button class="skinButton" onClick="processingInstance.changeSkin('defaultSkin')">
+        Default Skin
     </button>
     <button class="skinButton" onClick="processingInstance.changeSkin('skin1')">
         Skin 1
     </button>
-
 </body>
 
 </html>
