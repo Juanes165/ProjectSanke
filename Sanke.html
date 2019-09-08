@@ -155,6 +155,7 @@
                 //If is game is not playing.
                 if (!world.playing) {
                     return world;
+                    return make(gotFood(movement(world)), { canPress: true });
                     
                 }
 
