@@ -49,7 +49,6 @@
     <script>
         let { append, cons, first, isEmpty, isList, length, rest } = functionalLight;
         let { make, random, listMinOne, inList, ateSelf, outTheMap, pause, gotFood, growSnake, movement,foodSpawn } = require('snake-functions');
-
         const size = 20
         const canvasSize = 25
         const easy = 6
@@ -75,9 +74,11 @@
             headRight = processing.loadImage("images/defaultSkin/headRight.jpg")
             headUp = processing.loadImage("images/defaultSkin/headUp.jpg")
             headleft = processing.loadImage("images/defaultSkin/headLeft.jpg")
-
-            //First world's settings.
-
+            /**
+             * First world's settings.
+             * @returns {undefined}
+             * @param {empty}
+             */
             processing.setup = function () {
                
         
@@ -90,7 +91,7 @@
              * @returns {object}
              * @param {object} world
              * @param keycode
-             */
+             */            
             processing.onKeyEvent = function (world, keyCode) {
                 switch (keyCode) {
                     case processing.UP:
@@ -135,7 +136,7 @@
                         return make(world, {});
                 }
             }
-            /**
+           /**
              * Executes itself once every frame
              * @returns {object}
              * @param {object} world
@@ -195,9 +196,7 @@
                         break;
                 }
             }
-
-
-        /**
+            /**
            * If world.gameover equals true draws game over message.
            * @param {object} world
            * @returns {undefined}
@@ -219,14 +218,18 @@
                 }
             }
            
-            //Pause message.
+            /**
+             * if world.pause equals true draws Pause message.
+             * @param {object} world
+             * @returns {undefined}
+             */
             function pauseMs(world) {
                 if (world.pause == true && !world.gameover) {
                     processing.textFont(processing.PFont, 50);
                     processing.text("PAUSED", 105, 210);
                 }
             }
-            /**
+             /**
              * Click message.
              * @param {object} world
              * @returns {undefined}
@@ -239,6 +242,7 @@
                     highScore = localStorage.getItem(localStorageName) == null ? 0 :
                      localStorage.getItem(localStorageName);
                      
+                    processing.textFont(processing.PFont, 50);
                     processing.text("CLICK TO START", canvasSize, (canvasSize * 20) / 2);
                 }
             };
@@ -247,15 +251,21 @@
              * @param {object} world
              * @returns {undefined}
              */
-            function scoreLabel(world) {
+            function scoreMs(world) {
                 processing.textFont(processing.PFont, 20);
                 processing.text("SCORE: " + world.score, 20, 390);
             };
-            /**
-             * Draws the game.
-             * @param {object} world
-             * @returns {undefined}
-             */
+            
+          
+    
+              //this function prints the highscore
+              
+               function highScoreMs() {
+                processing.textFont(processing.PFont, 20);
+                processing.text("HIGHSCORE: " + highScore, 20, 420);}
+           
+    
+            //Draws the game.
             processing.drawGame = function (world) {
         
      
@@ -266,13 +276,13 @@
                 drawSnakeBody(rest(world.snake))
                 drawSnakeHead(world)
                 processing.fill(255, 0, 0);
+              
                 gameOverMs(world);
                 pauseMs(world);
                 clickMs(world);
                 scoreMs(world);
                 highScoreMs();
          
-
                 
                
             };
@@ -282,19 +292,18 @@
                 processing.drawGame(processing.state);
             };
             /**
-             *Sets current world to initial world.
+            *Sets current world to initial world.
              * @returns {object}
-             * @param {undefined}
              * */
             processing.restart = function () {
                 processing.state = firstWorld;
-            };
+            }
             //Changes world.framerate.
             processing.changeFrameRate = function (frames) {
                 if (!processing.state.playing) {
                     processing.state = make(processing.state, { frameRate: frames });
                 }
-            };
+            }
             //Executes when key is pressed.
             processing.keyPressed = function () {
                 if ((processing.state.canPress && processing.state.playing) || processing.keyCode == 80) {
@@ -303,7 +312,7 @@
                 else{
                     return 0
                 }
-            };
+            }
             //Changes source of skin variables.
             processing.changeSkin = function (skin) {
                 switch (skin) {
